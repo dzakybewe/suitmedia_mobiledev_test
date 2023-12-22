@@ -2,9 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:suitmedia_mobiledev_test/ui/third_screen.dart';
 import 'package:suitmedia_mobiledev_test/widgets/my_button.dart';
 
-class SecondScreen extends StatelessWidget {
+
+class SecondScreen extends StatefulWidget {
   static const routeName = '/second_screen';
-  const SecondScreen({super.key});
+  final String name;
+  const SecondScreen({super.key, required this.name});
+
+  @override
+  State<SecondScreen> createState() => _SecondScreenState();
+}
+
+class _SecondScreenState extends State<SecondScreen> {
+  String selectedUserName = 'Selected User Name';
+
+  void _awaitSelectedUserName(BuildContext context) async {
+    final result = await Navigator.pushNamed(
+      context,
+      ThirdScreen.routeName
+    );
+
+    setState(() {
+      selectedUserName = result.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,31 +51,30 @@ class SecondScreen extends StatelessWidget {
                 fontSize: 14
               ),
             ),
-            const Text(
-              'John Doe',
-              style: TextStyle(
+            Text(
+              widget.name == '' ? 'User' : widget.name,
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
               ),
             ),
             Expanded(
-              child: Container(
-                color: Colors.yellow,
-                child: const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Selected User Name',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24,
-                    ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  selectedUserName == 'null' ? 'Selected User Name' : selectedUserName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
                   ),
                 ),
               ),
             ),
             MyButton(
               label: 'Choose a User',
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ThirdScreen())),
+              onPressed: () {
+                _awaitSelectedUserName(context);
+              },
             )
           ],
         ),
